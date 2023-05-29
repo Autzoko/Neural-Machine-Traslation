@@ -72,7 +72,7 @@ def run():
         while True:
             title = input("请输入要翻译的英文句子：\n")
             if len(title.strip()) == 0:
-                continue;
+                continue
             title = ['BOS'] + nltk.word_tokenize(title.lower()) + ['EOS']
             title_num = [processor.en_tokenizer.word2idx.get(word, 1) for word in title]
             mb_x = torch.from_numpy(np.array(title_num).reshape(1, -1)).long().to(device)
