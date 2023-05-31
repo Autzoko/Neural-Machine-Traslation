@@ -32,3 +32,17 @@ parameters:
 - *--PAD_IDX*
 - *--beam_size*
 - *--max_beam_search_length*
+
+## Requirements
+Run command
+```
+conda install -r requirements.txt
+```
+to install basic requirements. 
+**The package *nltk* requires preset corpus, please use command**
+```python
+import nltk
+nltk.download()
+```
+**to download the corpus. Or git from https://github.com/nltk/nltk_data.git and extract**
+**all the files under *packages* to the proper directory.**
