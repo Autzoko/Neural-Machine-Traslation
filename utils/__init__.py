@@ -1,4 +1,6 @@
 #import pkuseg
+# pkuseg版本维护跟史一样，不用了！
+import jieba
 import nltk
 import random
 import torch
@@ -16,17 +18,15 @@ def setseed(seed):
 def load_file(path, tgt_add_bos=True):
     en = []
     cn = []
-    #seg = pkuseg.pkuseg()
     with open(path, 'r') as f:
         for line in f.readlines():
             line = line.strip().split('\t')
             en.append(["BOS"] + nltk.word_tokenize(line[0].lower()) + ["EOS"])
             if tgt_add_bos:
-                pass
-                #cn.append(["BOS"] + seg.cut(line[1]) + ["EOS"])
+                cn.append(["BOS"] + jieba.lcut(line[1]) + ["EOS"])
             else:
-                pass
-                #cn.append(seg.cut(line[1]))
+                cn.append(jieba.lcut(line[1]))
+
     return en, cn
 
 def build_tokenizer(sentences, args):
