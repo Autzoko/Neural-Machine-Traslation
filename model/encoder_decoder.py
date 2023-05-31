@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from Attention import Attention
+from model import AttentionUtils
+
 
 class Encoder(nn.Module):
     def __init__(self, vocab_size, embed_size, enc_hidden_size, dec_hidden_size, dropout=0.2):
@@ -11,7 +12,7 @@ class Encoder(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(enc_hidden_size * 2, dec_hidden_size)
 
-    def foward(self, x, lengths):
+    def forward(self, x, lengths):
         embedded = self.dropout(self.embed(x))
         packed_embedded = nn.utils.rnn.pack_padded_sequence(embedded, lengths, batch_first=True)
         packed_out, hid = self.rnn(packed_embedded)
@@ -27,11 +28,10 @@ class Decoder(nn.Module):
     def __init__(self, vocab_size, embedded_size, enc_hidden_size, dec_hidden_size, dropout=0.2):
         super(Decoder, self).__init__()
         self.embed = nn.Embedding(vocab_size, embedded_size)
-        self.atten = Attention(enc_hidden_size, dec_hidden_size)
+        self.atten = AttentionUtils.Attention(enc_hidden_size, dec_hidden_size)
         self.rnn = nn.GRU(embedded_size, dec_hidden_size, batch_first=True)
         self.out = nn.Linear(dec_hidden_size, vocab_size)
         self.dropout = nn.Dropout(dropout)
-
 
     def create_mask(self, x_len, y_len):
         max_x_len = x_len.max()
@@ -58,8 +58,3 @@ class Decoder(nn.Module):
         output = F.log_softmax(self.out(output), dim=-1)
 
         return output, atten, hid
-
-
-
-
-

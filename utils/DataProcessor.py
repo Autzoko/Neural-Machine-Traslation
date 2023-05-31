@@ -34,14 +34,13 @@ class DataProcess(object):
     def get_train_examples(self, args):
         return self._create_examples(os.path.join(args.data_dir, "train.txt"), "train", args)
 
-
     def get_dev_examples(self, args):
         return self._create_examples(os.path.join(args.data_dir, "dev.txt"), "dev", args)
 
-
     def _create_examples(self, path, set_type, args):
         en_sents, cn_sents = load_file(path)
-        out_en_sents, out_cn_sents = tokenize2num(en_sents, cn_sents, self.en_tokenizer.word2idx, self.cn_tokenizer.word2idx)
+        out_en_sents, out_cn_sents = tokenize2num(en_sents, cn_sents, self.en_tokenizer.word2idx,
+                                                  self.cn_tokenizer.word2idx)
         minibatches = getminibatches(len(out_en_sents), args.batch_size)
 
         all_examples = []

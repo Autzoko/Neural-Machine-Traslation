@@ -18,8 +18,8 @@ def run():
     parse.add_argument("--batch_size", default=16, type=int)
     parse.add_argument("--do_train", default=True, action="store_true")
     parse.add_argument("--do_test", default=True, action="store_true")
-    parse.add_argument("do_translate", default=True, action="store_true")
-    parse.add_argument("learning_rate", default=5e-4, type=float)
+    parse.add_argument("--do_translate", default=True, action="store_true")
+    parse.add_argument("--learning_rate", default=5e-4, type=float)
     parse.add_argument("--dropout", default=0.3, type=float)
     parse.add_argument("--num_epoch", default=10, type=int)
     parse.add_argument("--max_vocab_size", default=50000, type=int)
@@ -51,8 +51,8 @@ def run():
                                       args.dropout)
     model = seq2seq.seq2seq(encoder, decoder)
 
-    if os.path.exists("translate-best.th"):
-        model.load_state_dict(torch.load("translate-best.th"))
+    if os.path.exists("./checkpoints/translate-best.th"):
+        model.load_state_dict(torch.load("./checkpoints/translate-best.th"))
     model.to(device)
 
     loss_fn = criterion.ModelCriterion().to(device)
@@ -67,7 +67,7 @@ def run():
         test.test(args, model, processor)
 
     if args.do_translate:
-        model.load_state_dict(torch.load("translate-best.th"))
+        model.load_state_dict(torch.load("./checkpoints/translate-best.th"))
         model.to(device)
         while True:
             title = input("请输入要翻译的英文句子：\n")

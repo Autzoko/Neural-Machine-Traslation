@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Attention(nn.Module):
     def __init__(self, enc_hidden_size, dec_hidden_size):
         super(Attention, self).__init__()
@@ -11,7 +12,6 @@ class Attention(nn.Module):
 
         self.linear_in = nn.Linear(2 * enc_hidden_size, dec_hidden_size)
         self.linear_out = nn.Linear(2 * enc_hidden_size + dec_hidden_size, dec_hidden_size)
-
 
     def forward(self, output, context, mask):
         batch_size = context.shape[0]
@@ -26,6 +26,7 @@ class Attention(nn.Module):
         atten = F.softmax(atten, dim=2)
 
         context = torch.bmm(atten, context)
+        output = torch.cat((context, output), dim=2)
         output = torch.tanh(self.linear_out(output.view(batch_size * dec_seq, -1))).view(batch_size, dec_seq, -1)
 
         return output, atten
