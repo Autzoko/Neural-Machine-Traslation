@@ -5,6 +5,7 @@ from collections import namedtuple
 
 Hypothesis = namedtuple('Hypothesis', ['value', 'score'])
 
+
 class seq2seq(nn.Module):
     def __init__(self, encoder, decoder):
         super(seq2seq, self).__init__()
@@ -41,7 +42,7 @@ class seq2seq(nn.Module):
             live_hypo_num = topk - len(completed_hypo)
 
             contiuating_hypo_scores = (hypo_scores.unsqueeze(1).expand(hypo_num, output_t.shape[-1])
-                                       + output_t[:, -1, :].squeeze(1).view(-1))
+                                       + output_t[:, -1, :].squeeze(1)).view(-1)
             top_cand_hypo_scores, top_cand_hypo_pos = torch.topk(contiuating_hypo_scores, k=live_hypo_num)
 
             prev_hypo_ids = top_cand_hypo_pos / (output_t.shape[-1])
@@ -51,12 +52,13 @@ class seq2seq(nn.Module):
             live_hypo_ids = []
             new_hypo_scores = []
 
-            for prev_hypo_id, hypo_word_id, top_cand_hypo_score in zip(prev_hypo_ids, hypo_word_ids, top_cand_hypo_scores):
+            for prev_hypo_id, hypo_word_id, top_cand_hypo_score in zip(prev_hypo_ids, hypo_word_ids,
+                                                                       top_cand_hypo_scores):
                 prev_hypo_id = prev_hypo_id.item()
                 hypo_word_id = hypo_word_id.item()
                 top_cand_hypo_score = top_cand_hypo_score.item()
 
-                new_hypo_sent = hypo[prev_hypo_id] + [hypo_word_id]
+                new_hypo_sent = hypo[int(prev_hypo_id)] + [hypo_word_id]
 
                 if hypo_word_id == EOS_id:
                     completed_hypo.append(Hypothesis(value=new_hypo_sent[1:-1], score=top_cand_hypo_score))

@@ -16,9 +16,9 @@ def run():
 
     parse.add_argument("--data_dir", default='./data/', type=str, required=False)
     parse.add_argument("--batch_size", default=16, type=int)
-    parse.add_argument("--do_train", default=True, action="store_true")
-    parse.add_argument("--do_test", default=True, action="store_true")
-    parse.add_argument("--do_translate", default=True, action="store_true")
+    parse.add_argument("--do_train", default=False, action="store_true")
+    parse.add_argument("--do_test", default=False, action="store_true")
+    parse.add_argument("--do_translate", default=False, action="store_true")
     parse.add_argument("--learning_rate", default=5e-4, type=float)
     parse.add_argument("--dropout", default=0.3, type=float)
     parse.add_argument("--num_epoch", default=10, type=int)
@@ -34,7 +34,7 @@ def run():
     parse.add_argument("--max_beam_search_length", default=100, type=int)
 
     args = parse.parse_args()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     args.device = device
     setseed(2023)
 
